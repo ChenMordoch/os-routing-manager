@@ -3,6 +3,8 @@ import cors from 'cors';
 import { v4 as uuid } from 'uuid';
 import { RequestsDbHandler } from './db/requestsDbHandler';
 import { EmailClient } from './libs/emailClient';
+import validator from 'validator';
+
 const express = require("express");
 
 export class Server {
@@ -35,6 +37,17 @@ export class Server {
     router.post("/requests/", (req: Request, res: Response, next: NextFunction) => {
         const url: string = req.body.url;
         const approver: string = req.body.approver;
+
+        if(!validator.isEmail(approver)) {
+          res.status(400).send(JSON.stringify({ error: 'Invalid Email' }));
+          return;
+        }
+    
+        if(!validator.isURL(url)) {
+          res.status(400).send(JSON.stringify({ error: 'Invalid URL' }));
+          return;
+        }
+
         let userId: string = req.body.userId;
                 
         if(userId.length === 0) {       

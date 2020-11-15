@@ -11,7 +11,6 @@ interface RequestsProps {
 }
 
 function OSRequests({requests}: RequestsProps) {
-  console.log("asdasdsad")
 
   return (
           <div id="app">

@@ -22,10 +22,16 @@ export class RequestsApiClient {
       .then(res => {
         return res.json();
       })
-      .then((resJson) => resolve(resJson.userId))
-      .catch(err => reject(err) );
-    })
-  }
+      .then((resJson) => {
+        if(resJson.error) {
+          reject(resJson.error)
+          return;
+        }
+        resolve(resJson.userId)
+      })
+      .catch(err => reject(err));
+  })
+}
 
   public getRequests(userId: string): Promise<Request[]> {
     return new Promise<Request[]>((resolve, reject) => {
@@ -33,6 +39,11 @@ export class RequestsApiClient {
       .then(res => {
         return res.json();
       }).then((resJson) => {
+        if(resJson.error) {
+          reject(resJson.error)
+          return;
+        }
+        
         let result: Request[] = [];
   
         resJson.forEach(element => {
@@ -42,10 +53,12 @@ export class RequestsApiClient {
             approved: element.approved
           })
         });
-
+        
         resolve(result);
       })
-      .catch(err => reject(err));
+      .catch(err => {
+        reject(err);
+      });
     })
   }
 }

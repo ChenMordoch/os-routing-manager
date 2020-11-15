@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-//import {Form, TabContainer, Button} from "react-bootstrap";
+import validator from 'validator';
+
 
 interface SubmitProps {
   submitFunc: Function
@@ -11,6 +12,17 @@ function SubmitForm({submitFunc}: SubmitProps) {
 
   const afterSubmission = (event: any) => {
     event.preventDefault();
+
+    if(!validator.isEmail(email)) {
+      alert('Invalid Email Address');
+      return;
+    }
+
+    if(!validator.isURL(url)) {
+      alert('Invalid URL');
+      return;
+    }
+
     submitFunc(url, email);
 
     setUrl("");
