@@ -1,6 +1,5 @@
 import {Sequelize, DataType} from 'sequelize-typescript';
 import {OSRequest} from './models/request'
-import {sendApprovalEmail} from './../libs/emailClient'
 //const path = require('path');
  
 const sequelize =  new Sequelize({
@@ -15,20 +14,20 @@ let db = {
 
 export default db;
 
-export function saveNewRequest(osUrl: string, approverEmail: string, userId: string) : void {
+export async function saveNewRequest(osUrl: string, approverEmail: string, userId: string, requestId: string) : Promise<string> {
   let data = {
     osUrl: osUrl, 
     approverEmail: approverEmail,
     approved: false,
     userId: userId,
-    requestId: '12345aa', // TODO: switch by uuid given as input
+    requestId: requestId,
   }
-  OSRequest.create(data).then((result: OSRequest) => {
-    sendApprovalEmail(result.requestId);
-    return result.requestId;
-  }).catch((err: Error) => {
-    throw new Error("Couldn't create request: " + err);
-  });
+  
+  return await OSRequest.create(data).then((request: OSRequest) => {
+    return new Promise<string>(resolve => resolve(request.requestId))
+  }).catch((error: Error) => {
+    return new Promise<string>(resolve => resolve(undefined))
+  })
 }
 
 export function getRequestsByUserId(userId: string) {
