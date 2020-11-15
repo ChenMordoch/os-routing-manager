@@ -11,11 +11,7 @@ function SubmitForm({submitFunc}: SubmitProps) {
 
   const afterSubmission = (event: any) => {
     event.preventDefault();
-    // if (!this.isFormValid()) {
-    //   alert("Form not valid! all fields should be filled");
-    // } else {
     submitFunc(url, email);
-    // }import {sendApprovalEmail} from './../libs/emailClient'
 
     setUrl("");
     setEmail("");
